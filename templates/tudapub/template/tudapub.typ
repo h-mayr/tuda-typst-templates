@@ -572,7 +572,7 @@
   }
 
   if show_pages.title_page {
-    tudpub-make-title-page(
+    tudapub-make-title-page(
       title: title,
       title_german: title_german,
       thesis_type: thesis_type,

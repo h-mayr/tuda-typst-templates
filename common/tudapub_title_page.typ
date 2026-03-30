@@ -5,7 +5,7 @@
 
 // note the page needs to have the correct margins.
 // Set these up before
-#let tudpub-make-title-page(
+#let tudapub-make-title-page(
   title: [Title],
   title_german: [Title German],
 
