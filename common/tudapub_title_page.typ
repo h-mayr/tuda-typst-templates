@@ -9,8 +9,9 @@
   title: [Title],
   title_german: [Title German],
 
-  // "master" or "bachelor" thesis
+  // "master" or "bachelor" thesis or "phd"
   thesis_type: "master",
+  phd_type: none,
 
   // the code of the accentcolor.
   // A list of all available accentcolors is in the list tuda_colors
@@ -25,6 +26,11 @@
 
   // date of submission as string
   date_of_submission: datetime(
+    year: 2023,
+    month: 10,
+    day: 4,
+  ),
+  date_of_examination: datetime(
     year: 2023,
     month: 10,
     day: 4,
@@ -66,13 +72,18 @@
   let logo_tud_height = 22mm
 
   let submission_date = format-date(date_of_submission, language)
+  let examination_date = format-date(date_of_examination, language)
 
   let thesis_type_text = {
     if lower(thesis_type) == "master" {"Master"}
     else if lower(thesis_type) == "bachelor" {"Bachelor"}
-    else {panic("thesis_type has to be either 'master' or 'bachelor'")}
+    else if lower(thesis_type) == "phd" {"PhD"}
+    else {panic("thesis_type has to be either 'phd', 'master' or 'bachelor'")}
   }
 
+  let phd_title_text = {
+    if lower(phd_type) == "rernat" {"Zur Erlangung des Grades eines Doktors der Naturwissenschaften (Dr. rer. nat.)"}
+  }
 
   ///////////////////////////////////////
   // Display the title page
@@ -115,9 +126,11 @@
           #title_german
           \
           #set text(weight: "regular")
+          #phd_title_text
+          \
           #thesis_type_text thesis by #author
           \
-          Date of submission: #submission_date
+          Date of submission: #submission_date, Date of examination: #examination_date
           \
           \
           #for (i, reviewer_name) in reviewer_names.enumerate() [

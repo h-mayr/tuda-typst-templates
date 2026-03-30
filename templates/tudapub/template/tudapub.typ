@@ -14,15 +14,22 @@
   title: [Title],
   title_german: [Title German],
 
-  // Adjust height of title on title page if title gets to long
+  // Adjust height of title on title page if title gets too long
   title_height: 3.5em,
 
   // Adds an abstract page after the title page with the corresponding content.
   // E.g. abstract: [My abstract text...]
   abstract: none,
 
-  // "master" or "bachelor" thesis
+  // German abstract (Zusammenfassung)
+  abstract_german: none,
+
+  // "phd", "master" or "bachelor" thesis
   thesis_type: "master",
+
+  // PhD information
+  phd_type: "rernat", // rernat, nat, ing, etc.
+  phd_university: "Technische Universität Darmstadt",
 
   // The code of the accentcolor.
   // A list of all available accentcolors is in the list tuda_colors
@@ -42,6 +49,13 @@
     year: 2042,
     month: 10,
     day: 4,
+  ),
+
+  // Date of examination
+  date_of_examination: datetime(
+    year: 2024,
+    month: 4,
+    day: 15,
   ),
 
   location: "Darmstadt",
@@ -99,10 +113,10 @@
 
   // Add an English translation to the "Erklärung zur Abschlussarbeit".
   thesis_statement_pursuant_include_english_translation: false,
-  
+
   // Insert an image as a signature on the "Erklärung zur Abschlussarbeit"
   thesis_statement_pursuant_signature: none,
-  
+
   // Which pages to insert
   // Pages can be disabled individually.
   show_pages: (
@@ -159,7 +173,7 @@
 
 
   // How the table of contents outline is displayed.
-  // Either "adapted":    use the default typst outline and adapt the style 
+  // Either "adapted":    use the default typst outline and adapt the style
   // or     "rewritten":  use own custom outline implementation which better reproduces the look of the original latex template.
   //                      Note that this may be less stable than "adapted", thus when you notice visual problems with the outline switch to "adapted".
   outline_table_of_contents_style: "rewritten",
@@ -237,7 +251,7 @@
   }
 
 
-  
+
 
   ///////////////////////////////////////
   // page setup
@@ -314,8 +328,8 @@
 
     // change heading margin depending on its the first on the page
     let (heading_margin_before, is_first_on_page) = get-spacing-zero-if-first-on-page(
-      heading_3_margin_before, 
-      here(), 
+      heading_3_margin_before,
+      here(),
       content_page_margin_full_top,
       enable: reduce_heading_space_when_first_on_page
     )
@@ -351,7 +365,7 @@
       weight: "bold",
       size: fontsize
     )
-    it.body + [: ] 
+    it.body + [: ]
     h(1mm)
   }
 
@@ -366,14 +380,14 @@
       fallback: false,
       weight: "bold",
       size: 20.6pt,
-      //height: 
+      //height:
     )
     [#pagebreak(weak: true)]
     block(breakable: false, inset: 0pt, outset: 0pt, fill: none)[
       #stack(
         v(20mm),
         block[
-          //\ \ 
+          //\ \
           //#v(50pt)
           #if it.outlined and it.numbering != none {
             counter(heading).display(it.numbering)
@@ -388,7 +402,7 @@
     ]
     // rest figure/equation numbers for each chapter
     // -> manual reimplementation of the i-figured.reset-counters(...) function
-    //   -> fixes: heading page is wrong due to pagebreak 
+    //   -> fixes: heading page is wrong due to pagebreak
     if figure_numbering_per_chapter {
       for kind in (image, table, raw)  {
         counter(figure.where(kind: i-figured._prefix + repr(kind))).update(0)
@@ -406,14 +420,14 @@
   //  } else {it}
 
 
-  // heading level 2 
+  // heading level 2
   show heading.where(
     level: 2
   ): it => context {
     // change heading margin depending if its the first on the page
     let (heading_margin_before, is_first_on_page) = get-spacing-zero-if-first-on-page(
-      heading_2_margin_before, 
-      here(), 
+      heading_2_margin_before,
+      here(),
       content_page_margin_full_top,
       enable: reduce_heading_space_when_first_on_page
     )
@@ -440,7 +454,7 @@
             h(2pt)
           }
           #it.body
-          //[is_first_on_page: #is_first_on_page] 
+          //[is_first_on_page: #is_first_on_page]
           //#loc.position() #content_page_margin_full_top
         ],
         v(heading_2_line_spacing),
@@ -500,7 +514,7 @@
       let idx_str = numbering(it.note.numbering, ..it_counter_arr)
       //[#it.fields()]
 
-      stack(dir: ltr, 
+      stack(dir: ltr,
         h(5pt),
         super(idx_str),
         {
@@ -562,10 +576,12 @@
       title: title,
       title_german: title_german,
       thesis_type: thesis_type,
+      phd_type: phd_type,
       accentcolor: accentcolor,
       language: language,
       author: author,
       date_of_submission: date_of_submission,
+      date_of_examination: date_of_examination,
       location: location,
       reviewer_names: reviewer_names,
       logo_tuda: logo_tuda,
@@ -582,7 +598,7 @@
 
   ///////////////////////////////////////
   // Content pages
-  
+
   // body has different margins than title page
   // @todo some bug seems to insert an empty page at the end when content (title page) appears before this second 'set page'
   set page(
@@ -614,8 +630,8 @@
   // "Erklärung zur Abschlussarbeit" and abstract
   if show_pages.thesis_statement_pursuant {
     tudapub-get-thesis-statement-pursuant(
-      date: date_of_submission, 
-      author: author, 
+      date: date_of_submission,
+      author: author,
       location: location,
       include-english-translation: thesis_statement_pursuant_include_english_translation,
       signature: thesis_statement_pursuant_signature
@@ -625,6 +641,10 @@
   if abstract != none [
     = Abstract
     #abstract
+  ]
+  if abstract_german != none [
+    = Zusammenfassung
+    #abstract_german
   ]
 
 
