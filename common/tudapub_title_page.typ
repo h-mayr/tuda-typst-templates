@@ -83,6 +83,10 @@
 
   let phd_title_text = {
     if lower(phd_type) == "rernat" {"Zur Erlangung des Grades eines Doktors der Naturwissenschaften (Dr. rer. nat.)"}
+    else if lower(phd_type) == "ing" {"Zur Erlangung des akademischen Grades Doktor-Ingenieur (Dr.-Ing.)"}
+    else if lower(phd_type) == "phil" {"Zur Erlangung des Grades eines Doktor der Philosophie (Dr. phil.)"}
+    else if lower(phd_type) == "phil" {"Zur Erlangung des Grades eines Doktor der Philosophie (Dr. phil.)"}
+    else {"Submitted doctoral thesis"}
   }
 
   ///////////////////////////////////////
@@ -126,11 +130,11 @@
           #title_german
           \
           #set text(weight: "regular")
-          #phd_title_text
+          #if lower(thesis_type) == "phd" {phd_title_text}
           \
           #thesis_type_text thesis by #author
           \
-          Date of submission: #submission_date, Date of examination: #examination_date
+          Date of submission: #submission_date #if lower(thesis_type) == "phd" {", Date of examination: " ;examination_date}
           \
           \
           #for (i, reviewer_name) in reviewer_names.enumerate() [
